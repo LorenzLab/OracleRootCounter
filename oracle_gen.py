@@ -1,3 +1,6 @@
+import os
+import random
+
 import numpy as np
 import cv2
 from scipy import ndimage as ndi
@@ -40,15 +43,14 @@ def random_rotate(img):
     """
     angle = np.random.uniform(0, 360)
     img = ndi.rotate(img, angle, reshape=False)
-    img = cv2.resize(img, (500, 500), interpolation=cv2.INTER_LINEAR)
     return img
 
 def random_resize(img):
     """
     Randomly resize image.
     """
-    scalex = np.random.uniform(0.5, 2)
-    scaley = np.random.uniform(0.5, 2)
+    scalex = np.random.uniform(0.3, 0.6)
+    scaley = np.random.uniform(0.3, 0.6)
     img = cv2.resize(img, None, fx=scalex, fy=scaley, interpolation=cv2.INTER_LINEAR)
     return img
 
@@ -71,12 +73,39 @@ def load_image(path: str | int, add_noise: bool = False) -> np.ndarray:
         img = distort_image(img)
         img = random_flip(img)
         img = random_rotate(img)
+        img = random_resize(img)
     return img
+
+def merge_images(images: list[np.ndarray]) -> np.ndarray:
+    # put images into a blank canvas, which is at random position
+    # we also have to output the bounding box of each image, format: (x_center, y_center, w, h)
+    IMG_SIZE = 500
+    n = len(images)
+    canvas = np.zeros((IMG_SIZE, IMG_SIZE))
+    bounding_boxes = []
+    for i in range(n):
+        img = images[i]
+        x = np.random.randint(0, IMG_SIZE - img.shape[0])
+        y = np.random.randint(0, IMG_SIZE - img.shape[1])
+        canvas[x:x+img.shape[0], y:y+img.shape[1]] = np.maximum(img, canvas[x:x+img.shape[0], y:y+img.shape[1]])
+        bounding_boxes.append((x+img.shape[0]//2, y+img.shape[1]//2, img.shape[0], img.shape[1]))
+    return canvas, bounding_boxes
+
+def get_batch_image(path: str) -> np.ndarray:
+    # path is a folder containing images
+    images = os.listdir(path)
+    randomly_selected_images = [random.choice(range(len(images))) for _ in range(random.randint(1, 5))]
+    images = [load_image(os.path.join(path, images[i]), add_noise=True) for i in randomly_selected_images]
+    out_img, bounding_boxes = merge_images(images)
+    return out_img, bounding_boxes, randomly_selected_images
 
 def test():
     test_distort()
 
 if __name__ == '__main__':
-    image = load_image(1, add_noise=True)
-    plt.imshow(image, cmap='gray')
+    path = "00_Oracle/LOBI_Roots"
+    out_img, bounding_boxes, randomly_selected_images = get_batch_image(path)
+    for i in randomly_selected_images:
+        print(os.listdir(path)[i])
+    plt.imshow(out_img, cmap='gray')
     plt.show()
