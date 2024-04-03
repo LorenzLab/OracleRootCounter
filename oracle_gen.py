@@ -108,16 +108,23 @@ def get_trainable_image(path: str) -> np.ndarray:
     out_img, bounding_boxes = merge_images(images)
     return out_img, bounding_boxes, randomly_selected_images
 
-def get_batch_image(path: str, batch_size=16) -> np.ndarray:
-    # path is a folder containing images
-    images = []
-    bounding_boxes = []
-    labels = []
-    for _ in range(batch_size):
-        out_img, bb, l = get_trainable_image(path)
-        images.append(out_img)
-        bounding_boxes.append(bb)
-        labels.append(l)
+def get_batch_image(path: str, batch_size=16, multiprocessing=True) -> np.ndarray:
+    if multiprocessing:
+        import multiprocessing as mp
+        from multiprocessing import Pool
+        with Pool(mp.cpu_count()) as p:
+            data = p.map(get_trainable_image, [path]*batch_size)
+        images, bounding_boxes, labels = zip(*data)
+    else:        
+        # path is a folder containing images
+        images = []
+        bounding_boxes = []
+        labels = []
+        for _ in range(batch_size):
+            out_img, bb, l = get_trainable_image(path)
+            images.append(out_img)
+            bounding_boxes.append(bb)
+            labels.append(l)
     return images, bounding_boxes, labels
 
 def test():
@@ -130,7 +137,9 @@ def test():
     
     fig = plt.figure(figsize=(13, 13))
     
-    out_img, bounding_boxes, randomly_selected_images = get_batch_image(path)
+    ss = time.time()
+    out_img, bounding_boxes, randomly_selected_images = get_batch_image(path, batch_size=32, multiprocessing=True)
+    print(f"Time taken: {time.time() - ss:.2f}s")
     
     for en, (i, j, k) in enumerate(zip(out_img, bounding_boxes, randomly_selected_images), 1):
         plt.subplot(4, 4, en)
