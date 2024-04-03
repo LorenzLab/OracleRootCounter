@@ -132,13 +132,10 @@ def test():
     with open('file_list_order.txt', 'w') as f:
         for line in os.listdir(path):
             f.write(f"{line}\n")
-
-    st = time.time()
-    
     fig = plt.figure(figsize=(13, 13))
     
     ss = time.time()
-    out_img, bounding_boxes, randomly_selected_images = get_batch_image(path, batch_size=32, multiprocessing=True)
+    out_img, bounding_boxes, randomly_selected_images = get_batch_image(path, multiprocessing=True)
     print(f"Time taken: {time.time() - ss:.2f}s")
     
     for en, (i, j, k) in enumerate(zip(out_img, bounding_boxes, randomly_selected_images), 1):
