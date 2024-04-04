@@ -12,6 +12,7 @@ class OracleDetectionTrainer(DetectionTrainer):
         self.train_dataloader = train_dataloader
         self.test_dataloader = test_dataloader
         self.data = {"nc": None}
+        self.model = "yolov8n.yaml"
     
     def get_dataset(self):
         return None, None
