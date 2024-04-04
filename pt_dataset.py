@@ -28,7 +28,7 @@ def main():
 
     # Iterate over the dataloader
     for batch in dataloader:
-        print(batch["bboxes"], batch["labels"])
+        print(batch["bboxes"].shape, batch["labels"].shape)
 
 
 if __name__ == "__main__":
