@@ -10,7 +10,7 @@ import cv2
 from scipy import ndimage as ndi
 
 N_CPU = 56
-N_DATA = 1000
+N_DATA = 10000
 dataset_out_path = "dataset_out"
 
 def distort_image(img):
