@@ -18,7 +18,7 @@ class OracleDataset(Dataset):
         img, bbox, label = self.generator(self.root_path, n_roots=n_roots_oracle)
         # Assuming your generator handles single items per __getitem__
         # You may need to adjust depending on your generator's output
-        return torch.tensor(img), torch.tensor(bbox), torch.tensor(label)
+        return {"img": torch.tensor(img), "bboxes": torch.tensor(bbox), "labels": torch.tensor(label)}
 
 
 def main():
