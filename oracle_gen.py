@@ -72,7 +72,7 @@ def crop_to_bbox(img: np.ndarray) -> np.ndarray:
     return img[y: y+h, x: x+w]
 
 
-def load_image(path: str | int, add_noise: bool = False) -> np.ndarray:
+def load_image(path: "str | int", add_noise: bool = False) -> np.ndarray:
     if isinstance(path, int):
         path = f'00_Oracle/LOBI_Roots/r{path}.bmp'
     img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
@@ -85,7 +85,7 @@ def load_image(path: str | int, add_noise: bool = False) -> np.ndarray:
         img = crop_to_bbox(img)
     return img
 
-def merge_images(images: list[np.ndarray]) -> np.ndarray:
+def merge_images(images: "list[np.ndarray]") -> np.ndarray:
     # put images into a blank canvas, which is at random position
     # we also have to output the bounding box of each image, format: (x_center, y_center, w, h)
     IMG_SIZE = 500
@@ -100,10 +100,10 @@ def merge_images(images: list[np.ndarray]) -> np.ndarray:
         bounding_boxes.append((x+img.shape[0]//2, y+img.shape[1]//2, img.shape[0], img.shape[1]))
     return canvas, bounding_boxes
 
-def get_trainable_image(path: str) -> np.ndarray:
+def get_trainable_image(path: str, n_roots: int = None) -> np.ndarray:
     # path is a folder containing images
     images = os.listdir(path)
-    randomly_selected_images = [random.choice(range(len(images))) for _ in range(random.randint(1, 5))]
+    randomly_selected_images = [random.choice(range(len(images))) for _ in range(n_roots or random.randint(1, 5))]
     images = [load_image(os.path.join(path, images[i]), add_noise=True) for i in randomly_selected_images]
     out_img, bounding_boxes = merge_images(images)
     return out_img, bounding_boxes, randomly_selected_images
