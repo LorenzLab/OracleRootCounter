@@ -17,7 +17,7 @@ class OracleDetectionTrainer(DetectionTrainer):
     def get_dataset(self):
         return None, None
 
-    def get_dataloader(self, mode="train", *args, **kwargs):
+    def get_dataloader(self, *args, mode="train", **kwargs):
         if mode == "train":
             return self.train_dataloader
         elif mode == "test" or mode == "val":
