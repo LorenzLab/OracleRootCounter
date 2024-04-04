@@ -11,10 +11,6 @@ class OracleDetectionTrainer(DetectionTrainer):
         # super().__init__(*args, **kwargs)
         self.dataloader = dataloader
 
-    def get_dataset(self):
-        return self.dataloader.dataset
-
-
     def get_dataloader(self, cfg, weights):
         return self.dataloader
 
