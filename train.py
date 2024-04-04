@@ -13,6 +13,8 @@ class OracleDetectionTrainer(DetectionTrainer):
         self.test_dataloader = test_dataloader
         self.data = {"nc": None, "names": "Oracle"}
         self.model = "yolov8n.yaml"
+
+        self.train_dataloader.dataset.labels = range(5)
     
     def get_dataset(self):
         return None, None
