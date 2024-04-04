@@ -28,8 +28,7 @@ def main():
 
     # Iterate over the dataloader
     for batch in dataloader:
-        img, bbox, label = batch
-        print(bbox, label)
+        print(batch["bboxes"], batch["labels"])
 
 
 if __name__ == "__main__":
