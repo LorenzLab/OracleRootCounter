@@ -14,7 +14,7 @@ class OracleDetectionTrainer(DetectionTrainer):
         self.data = {"nc": None, "names": "Oracle"}
         self.model = "yolov8n.yaml"
 
-        self.train_dataloader.dataset.labels = range(5)
+        self.train_dataloader.dataset.labels = [{"bboxes": [[i, i, i, i]], "cls": [i]} for i in range(5)]
     
     def get_dataset(self):
         return None, None
