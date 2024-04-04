@@ -11,8 +11,9 @@ class OracleDetectionTrainer(DetectionTrainer):
         super().__init__(*args, **kwargs)
         self.train_dataloader = train_dataloader
         self.test_dataloader = test_dataloader
-        self.data = {"nc": 0, "names": "Oracle"}
+        self.data = {"nc": 0, "names": "Oracle", "ch": 1}
         self.model = "yolov8n.yaml"
+        self.input_channels = 1
 
         self.train_dataloader.dataset.labels = [{"bboxes": [[i, i, i, i]], "cls": [i]} for i in range(5)]
     
