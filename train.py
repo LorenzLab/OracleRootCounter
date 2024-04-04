@@ -8,7 +8,7 @@ from ultralytics.models.yolo.detect import DetectionTrainer
 
 class OracleDetectionTrainer(DetectionTrainer):
     def __init__(self, dataloader, *args, **kwargs):
-        # super().__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.dataloader = dataloader
 
     def get_dataloader(self, cfg, weights):
