@@ -21,3 +21,7 @@ def main():
     dataloader = DataLoader(dataset, batch_size=16, shuffle=False, num_workers=6)
     trainer = OracleDetectionTrainer(dataloader)
     trainer.train()
+
+
+if __name__ == "__main__":
+    main()
