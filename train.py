@@ -11,6 +11,7 @@ class OracleDetectionTrainer(DetectionTrainer):
         super().__init__(*args, **kwargs)
         self.train_dataloader = train_dataloader
         self.test_dataloader = test_dataloader
+        self.data = {"nc": None}
     
     def get_dataset(self):
         return None, None
