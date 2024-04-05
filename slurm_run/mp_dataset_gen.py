@@ -11,6 +11,7 @@ from scipy import ndimage as ndi
 
 N_CPU = 56
 N_DATA = 10000
+LABEL_ID_METADATA = {i: {"filename": f"r{i+1}.bmp", "name": f"r{i+1}"} for i in range(0, 488)}
 dataset_out_path = "dataset_out"
 
 def distort_image(img):
@@ -99,9 +100,8 @@ def merge_images(images: "list[np.ndarray]") -> np.ndarray:
 
 def get_trainable_image(path: str, n_roots: int = None) -> np.ndarray:
     # path is a folder containing images
-    images = os.listdir(path)
-    randomly_selected_images = [random.choice(range(len(images))) for _ in range(n_roots or random.randint(1, 5))]
-    images = [load_image(os.path.join(path, images[i]), add_noise=True) for i in randomly_selected_images]
+    randomly_selected_images = [random.choice(range(len(LABEL_ID_METADATA))) for _ in range(n_roots or random.randint(1, 5))]
+    images = [load_image(os.path.join(path, LABEL_ID_METADATA[i]["filename"]), add_noise=True) for i in randomly_selected_images]
     out_img, bounding_boxes = merge_images(images)
 
     id_ = uuid.uuid4().hex
@@ -124,9 +124,8 @@ def test():
     os.makedirs(os.path.join(dataset_out_path, 'labels'), exist_ok=True)
 
     path = "00_Oracle/LOBI_Roots"
-    with open('file_list_order.txt', 'w') as f:
-        for line in os.listdir(path):
-            f.write(f"{line}\n")
+    with open('label_metadata.txt', 'w') as f:
+        f.write(str(LABEL_ID_METADATA))
     
     get_batch_image(path, N_DATA, multiprocessing=True)
 
