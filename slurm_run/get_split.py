@@ -26,13 +26,13 @@ def main():
     print(f"Test: {len(test_data)}")
 
     # write to txt file
-    with open("train.txt", "w") as f:
+    with open(os.path.join(DATASET_DIR, "train.txt"), "w") as f:
         for line in train_data:
             f.write(f'{os.path.join(".", "images", line)}\n')
-    with open("val.txt", "w") as f:
+    with open(os.path.join(DATASET_DIR, "val.txt"), "w") as f:
         for line in val_data:
             f.write(f'{os.path.join(".", "images", line)}\n')
-    with open("test.txt", "w") as f:
+    with open(os.path.join(DATASET_DIR, "test.txt"), "w") as f:
         for line in test_data:
             f.write(f'{os.path.join(".", "images", line)}\n')
 
