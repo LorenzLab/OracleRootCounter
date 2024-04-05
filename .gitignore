@@ -160,3 +160,4 @@ cython_debug/
 #.idea/
 
 00_Oracle/
+client_secrets.json
