@@ -16,7 +16,7 @@ part1 = id_lists[:len(id_lists) // 2]
 part2 = id_lists[len(id_lists) // 2:]
 
 gauth = GoogleAuth()
-gauth.LocalWebserverAuth() # Creates local webserver and auto handles authentication.
+gauth.CommandLineAuth() # Creates local webserver and auto handles authentication.
 drive = GoogleDrive(gauth)
 
 # file_list = drive.ListFile({'q': "'1XPNJXc4IvOMumELLHTIbxIqvngLiyNQD' in parents and trashed=false"}).GetList()
