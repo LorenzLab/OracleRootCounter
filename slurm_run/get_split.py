@@ -11,7 +11,7 @@ def get_split(data_dir):
     """
     Split data into train, validation and test sets.
     """
-    data = os.listdir(os.join(data_dir, "images"))
+    data = os.listdir(os.path.join(data_dir, "images"))
     n = len(data)
     random.shuffle(data)
     train_data = data[:int(n*TRAIN_SPLIT)]
