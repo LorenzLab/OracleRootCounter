@@ -95,7 +95,7 @@ def merge_images(images: "list[np.ndarray]") -> np.ndarray:
         x = np.random.randint(0, IMG_SIZE - img.shape[1])
         y = np.random.randint(0, IMG_SIZE - img.shape[0])
         canvas[y: y+img.shape[0], x: x+img.shape[1]] = np.maximum(img, canvas[y: y+img.shape[0], x: x+img.shape[1]])
-        bounding_boxes.append((x, y, x + img.shape[1], y + img.shape[0]))
+        bounding_boxes.append((x + img.shape[1] // 2, y + img.shape[0] // 2, img.shape[1], img.shape[0]))
     return canvas, bounding_boxes
 
 def get_trainable_image(path: str, n_roots: int = None) -> np.ndarray:
