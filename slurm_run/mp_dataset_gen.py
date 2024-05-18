@@ -10,7 +10,7 @@ import cv2
 from scipy import ndimage as ndi
 
 N_CPU = 56
-N_DATA = 10000
+N_DATA = 10
 LABEL_ID_METADATA = {i: {"filename": f"r{i+1}.bmp", "name": f"r{i+1}"} for i in range(0, 488)}
 dataset_out_path = "dataset_out"
 
@@ -23,8 +23,8 @@ def distort_image(img):
     sh = (N, N)
     img = cv2.resize(img, sh, interpolation=cv2.INTER_LINEAR)
     t = np.random.normal(size=sh)
-    dx = ndi.gaussian_filter(t, 40, order=(0,1))
-    dy = ndi.gaussian_filter(t, 40, order=(1,0))
+    dx = ndi.gaussian_filter(t, 80, order=(0,1))
+    dy = ndi.gaussian_filter(t, 80, order=(1,0))
     dx *= 30/dx.max()
     dy *= 30/dy.max()
 
@@ -49,7 +49,9 @@ def random_rotate(img):
     """
     Randomly rotate image.
     """
-    angle = np.random.uniform(0, 360)
+    prob_dist = np.cos(np.arange(0, 360)/360*12.56)**200
+    prob_dist = prob_dist / np.sum(prob_dist)
+    angle = np.random.choice(np.arange(0, 360), p=prob_dist)
     img = ndi.rotate(img, angle, reshape=True)
     return img
 
