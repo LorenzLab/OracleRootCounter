@@ -14,7 +14,8 @@ NUM_PIXELS = 500
 ROOT_PLACES = pd.read_csv("Root_Places.csv")
 ORACLE_ROOT_DIR = "00_Oracle/LOBI_Roots/"
 GEN_DIR = "gen_res/"
-os.makedirs(GEN_DIR, exist_ok=True)
+os.makedirs(os.path.join(GEN_DIR, "images"), exist_ok=True)
+os.makedirs(os.path.join(GEN_DIR, "labels"), exist_ok=True)
 
 def load_roots():
     roots = []
@@ -52,6 +53,7 @@ def get_oracle_with_placement(placement):
             pic_A = cv2.resize(pic_A, (int(NUM_PIXELS * random.uniform(0.5, 0.7)), int(NUM_PIXELS * random.uniform(0.5, 0.7))))
             # put pic_A in the center to the blank canvas
             canvas = put_root_on_canvas(pic_A, position, canvas)
+            label = [[roots[0], position[1], position[0], pic_A.shape[1], pic_A.shape[0]]]
         elif placement == 1 or placement == 4:
             if placement == 1:
                 roots = random_root("B1"), random_root("B2")
@@ -69,20 +71,18 @@ def get_oracle_with_placement(placement):
                 pos_B2 = (random.randint(int(NUM_PIXELS*0.5), int(NUM_PIXELS*0.7)), NUM_PIXELS // 2) 
             canvas = put_root_on_canvas(pic_B1, pos_B1, canvas)
             canvas = put_root_on_canvas(pic_B2, pos_B2, canvas)
+            label = [[roots[0], pos_B1[1], pos_B1[0], pic_B1.shape[1], pic_B1.shape[0]], [roots[1], pos_B2[1], pos_B2[0], pic_B2.shape[1], pic_B2.shape[0]]]
         elif placement == 2 or placement == 3 or placement == 5 or placement == 6:
             # pic_B1 is the long root
             if placement == 2:
                 roots = random_root("B1"), random_root("B3"), random_root("B4")
-                pic_B1, pic_B3, pic_B4 = ROOTS_PICS[roots[0]], ROOTS_PICS[roots[1]], ROOTS_PICS[roots[2]]
             elif placement == 3:
                 roots = random_root("B2"), random_root("B5"), random_root("B6")
-                pic_B1, pic_B3, pic_B4 = ROOTS_PICS[roots[0]], ROOTS_PICS[roots[1]], ROOTS_PICS[roots[2]]
             elif placement == 5:
                 roots = random_root("C1"), random_root("B6"), random_root("B4")
-                pic_B1, pic_B3, pic_B4 = ROOTS_PICS[roots[0]], ROOTS_PICS[roots[1]], ROOTS_PICS[roots[2]]
             else:
                 roots = random_root("C2"), random_root("B5"), random_root("B3")
-                pic_B1, pic_B3, pic_B4 = ROOTS_PICS[roots[0]], ROOTS_PICS[roots[1]], ROOTS_PICS[roots[2]]
+            pic_B1, pic_B3, pic_B4 = ROOTS_PICS[roots[0]], ROOTS_PICS[roots[1]], ROOTS_PICS[roots[2]]
             pic_B1 = cv2.resize(pic_B1, (int(NUM_PIXELS * random.uniform(0.25, 0.40)), int(NUM_PIXELS * random.uniform(0.25, 0.40))))
             pic_B3 = cv2.resize(pic_B3, (int(NUM_PIXELS * random.uniform(0.25, 0.40)), int(NUM_PIXELS * random.uniform(0.25, 0.40))))
             pic_B4 = cv2.resize(pic_B4, (int(NUM_PIXELS * random.uniform(0.25, 0.40)), int(NUM_PIXELS * random.uniform(0.25, 0.40))))
@@ -115,13 +115,13 @@ def get_oracle_with_placement(placement):
             canvas = put_root_on_canvas(pic_B1, pos_B1, canvas)
             canvas = put_root_on_canvas(pic_B3, pos_B3, canvas)
             canvas = put_root_on_canvas(pic_B4, pos_B4, canvas)
+            label = [[roots[0], pos_B1[1], pos_B1[0], pic_B1.shape[1], pic_B1.shape[0]], [roots[1], pos_B3[1], pos_B3[0], pic_B3.shape[1], pic_B3.shape[0]], [roots[2], pos_B4[1], pos_B4[0], pic_B4.shape[1], pic_B4.shape[0]]]
         elif placement == 7 or placement == 8:
             if placement == 7:
                 roots = random_root("D1"), random_root("D2")
-                pic_D1, pic_D2 = ROOTS_PICS[roots[0]], ROOTS_PICS[roots[1]]
             else:
                 roots = random_root("D3"), random_root("D4")
-                pic_D1, pic_D2 = ROOTS_PICS[roots[0]], ROOTS_PICS[roots[1]]
+            pic_D1, pic_D2 = ROOTS_PICS[roots[0]], ROOTS_PICS[roots[1]]
             pic_D1 = cv2.resize(pic_D1, (int(NUM_PIXELS * random.uniform(0.25, 0.40)), int(NUM_PIXELS * random.uniform(0.25, 0.40))))
             pic_D2 = cv2.resize(pic_D2, (int(NUM_PIXELS * random.uniform(0.3, 0.45)), int(NUM_PIXELS * random.uniform(0.3, 0.45))))
             if placement == 7:
@@ -132,6 +132,7 @@ def get_oracle_with_placement(placement):
                 pos_D2 = (random.randint(int(NUM_PIXELS*0.67), int(NUM_PIXELS*0.75)), random.randint(int(NUM_PIXELS*0.67), int(NUM_PIXELS*0.75)))
             canvas = put_root_on_canvas(pic_D1, pos_D1, canvas)
             canvas = put_root_on_canvas(pic_D2, pos_D2, canvas)
+            label = [[roots[0], pos_D1[1], pos_D1[0], pic_D1.shape[1], pic_D1.shape[0]], [roots[1], pos_D2[1], pos_D2[0], pic_D2.shape[1], pic_D2.shape[0]]]
         else:  # placement == 9
             roots = random_root("E1"), random_root("E2"), random_root("E3")
             pic_E1, pic_E2, pic_E3 = ROOTS_PICS[roots[0]], ROOTS_PICS[roots[1]], ROOTS_PICS[roots[2]]
@@ -144,16 +145,20 @@ def get_oracle_with_placement(placement):
             canvas = put_root_on_canvas(pic_E1, pos_E1, canvas)
             canvas = put_root_on_canvas(pic_E2, pos_E2, canvas)
             canvas = put_root_on_canvas(pic_E3, pos_E3, canvas)
-        return canvas, roots
+            label = [[roots[0], pos_E1[1], pos_E1[0], pic_E1.shape[1], pic_E1.shape[0]], [roots[1], pos_E2[1], pos_E2[0], pic_E2.shape[1], pic_E2.shape[0]], [roots[2], pos_E3[1], pos_E3[0], pic_E3.shape[1], pic_E3.shape[0]]]
+        return canvas, roots, label
     except ValueError as e:
         print(f"Error: {e} at placement {placement}")
         return get_oracle_with_placement(placement)
 
 
 def save_oracle_with_placement(placement, save_dir, filename_type="uuid"):
-    oracle, roots = get_oracle_with_placement(placement)
+    oracle, roots, label = get_oracle_with_placement(placement)
     filename = f"{'-'.join(str(x+1) for x in roots)}.png" if filename_type == "roots" else f"{uuid.uuid4().hex}.png"
-    cv2.imwrite(os.path.join(save_dir, filename), oracle)
+    cv2.imwrite(os.path.join(save_dir, "images", filename), oracle)
+    with open(os.path.join(save_dir, "labels", filename.replace(".png", ".txt")), "w") as f:
+        for l in label:
+            f.write(f"{l[0]} {l[1]/NUM_PIXELS} {l[2]/NUM_PIXELS} {l[3]/NUM_PIXELS} {l[4]/NUM_PIXELS}\n")
 
 
 def test():
