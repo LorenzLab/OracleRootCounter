@@ -152,7 +152,7 @@ def get_oracle_with_placement(placement):
         return get_oracle_with_placement(placement)
 
 
-def save_oracle_with_placement(placement, save_dir, filename_type="uuid"):
+def save_oracle_with_placement(placement, save_dir=GEN_DIR, filename_type="uuid"):
     oracle, roots, label = get_oracle_with_placement(placement)
     filename = f"{'-'.join(str(x+1) for x in roots)}.png" if filename_type == "roots" else f"{uuid.uuid4().hex}.png"
     cv2.imwrite(os.path.join(save_dir, "images", filename), oracle)
@@ -169,7 +169,7 @@ def test():
 
 def main():
     with mp.Pool(NUM_CORES) as p:
-        p.map(lambda x: save_oracle_with_placement(x, GEN_DIR), random_placement(NUM_GEN_PICS))
+        p.map(save_oracle_with_placement, random_placement(NUM_GEN_PICS))
 
 if __name__ == "__main__":
     test()
